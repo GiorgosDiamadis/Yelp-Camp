@@ -1,0 +1,36 @@
+<% layout('layouts/boilerplate')%>
+
+<div class="d-flex justify-content-center">
+  <button class="btn btn-primary">
+    <a href="/campgrounds/new">Add Campground</a>
+  </button>
+</div>
+
+<% function chunkify(a, n, balanced) { if (n < 2) return [a]; var len =
+a.length, out = [], i = 0, size; if (len % n === 0) { size = Math.floor(len /
+n); while (i < len) { out.push(a.slice(i, i += size)); } } else if (balanced) {
+while (i < len) { size = Math.ceil((len - i) / n--); out.push(a.slice(i, i +=
+size)); } } else { n--; size = Math.floor(len / n); if (len % size === 0)
+size--; while (i < size * n) { out.push(a.slice(i, i += size)); }
+out.push(a.slice(size * n)); } return out; } out =
+chunkify(campgrounds,4,false)%>
+
+<div class="container">
+  <% for(let chunk of out) {%>
+  <div class="row">
+    <% for(let camp of chunk){ %>
+    <div class="col-md-3 mt-1 mb-1">
+      <div class="card" style="width: 18rem">
+        <img src="<%= camp.image %> " class="card-img-top" />
+        <div class="card-body">
+          <h5 class="card-title"><%=camp.title%>, <%= camp.location %></h5>
+          <a href="/campgrounds/<%= camp._id %> " class="btn btn-primary"
+            >Check it out</a
+          >
+        </div>
+      </div>
+    </div>
+    <% } %>
+  </div>
+  <% } %>
+</div>
