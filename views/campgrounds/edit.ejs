@@ -1,9 +1,9 @@
 <% layout('layouts/boilerplate')%>
 
 <div class="row">
-  <h1 class="text-center">New Campground</h1>
+  <h1 class="text-center">Edit Campground</h1>
   <div class="col-6 offset-3">
-    <form action="/campgrounds" method="POST">
+    <form action="/campgrounds" method="POST" novalidate class="validated-form">
       <div class="mb-3">
         <label class="form-label" for="title">Title</label>
         <input
@@ -12,6 +12,7 @@
           id="title"
           name="campground[title]"
           value="<%= campground.title %> "
+          required
         />
       </div>
 
@@ -22,6 +23,7 @@
           type="text"
           id="location"
           name="campground[location]"
+          required
           value="<%= campground.location %> "
         />
       </div>
@@ -33,6 +35,7 @@
           type="text"
           id="description"
           name="campground[description]"
+          required
         >
 <%= campground.description %></textarea
         >
@@ -46,6 +49,7 @@
           id="price"
           name="campground[price]"
           value="<%= campground.price %> "
+          required
         />
       </div>
 
@@ -57,10 +61,11 @@
           id="image"
           name="campground[image]"
           value="<%= campground.image %> "
+          required
         />
       </div>
       <div class="mb-3">
-        <button class="btn btn-success">Update Campground</button>
+        <button class="btn btn-info">Update Campground</button>
       </div>
     </form>
   </div>
