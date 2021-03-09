@@ -1,7 +1,7 @@
 <% layout('layouts/boilerplate')%>
 
 <div class="row mb-3">
-  <div class="col-6 offset-3">
+  <div class="col-6">
     <div class="card">
       <img
         class="card-img-top"
@@ -33,5 +33,22 @@
         </button>
       </div>
     </div>
+  </div>
+
+  <div class="col-6">
+    <% for(const rev of campground.reviews) {%>
+    <div class="card mb-3">
+      <div class="card-body">
+        <p class="card-title">Rating: <%= rev.rating %></p>
+        <p class="card-text"><%= rev.review %></p>
+        <form
+          action="/campgrounds/<%= campground._id %>/review/<%= rev._id %>?_method=DELETE"
+          method="POST"
+        >
+          <button class="submit btn btn-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+    <% } %>
   </div>
 </div>
