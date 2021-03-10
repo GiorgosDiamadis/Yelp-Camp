@@ -27,15 +27,45 @@
         >
           <button class="btn btn-danger">Delete</button>
         </form>
-
-        <button class="btn btn-success">
-          <a href="/campgrounds/<%=campground._id%>/review">Add Review</a>
-        </button>
       </div>
     </div>
   </div>
 
   <div class="col-6">
+    <form
+      action="/campgrounds/<%= campground._id %>/review "
+      method="POST"
+      novalidate
+      class="validated-form"
+    >
+      <div>
+        <label for="review" class="form-label">Review</label>
+        <textarea
+          class="form-control"
+          type="text"
+          id="review"
+          name="rev[review]"
+          required
+        ></textarea>
+      </div>
+
+      <div>
+        <label for="rating" class="form-label"> Rating</label>
+        <input
+          class="form-control"
+          type="number"
+          id="rating"
+          name="rev[rating]"
+          class="form control"
+          required
+        />
+      </div>
+
+      <button class="btn btn-success mt-3">Add review</button>
+    </form>
+
+    <hr />
+
     <% for(const rev of campground.reviews) {%>
     <div class="card mb-3">
       <div class="card-body">
