@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const catchAsync = require("../utils/catchAsync");
 const { campgroundSchema } = require("../validation");
+const flash = require("connect-flash");
 
 const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground");
@@ -34,6 +35,7 @@ router.post(
   catchAsync(async (req, res, next) => {
     const campground = new Campground(req.body.campground);
     await campground.save();
+    req.flash("success", "Successfully added a new campground");
     res.redirect(`/campgrounds/${campground._id}`);
   })
 );
@@ -45,8 +47,11 @@ router.get(
       "reviews"
     );
     if (!campground) {
+      req.flash("error", "Campground doesn't exist");
+
       return res.redirect("/campgrounds");
     }
+
     res.render("campgrounds/show", { campground });
   })
 );
@@ -56,6 +61,8 @@ router.get(
   catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     if (!campground) {
+      req.flash("error", "Campground doesn't exist");
+
       return res.redirect("/campgrounds");
     }
     res.render("campgrounds/edit", { campground });
@@ -70,6 +77,8 @@ router.put(
     const campground = await Campground.findByIdAndUpdate(id, {
       ...req.body.campground,
     });
+    req.flash("success", "Campground edited successfully");
+
     res.redirect(`/campgrounds/${campground._id}`);
   })
 );
@@ -79,6 +88,8 @@ router.delete(
   catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
+    req.flash("success", "Campground deleted");
+
     res.redirect("/campgrounds");
   })
 );

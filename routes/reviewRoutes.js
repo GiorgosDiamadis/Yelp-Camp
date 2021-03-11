@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
-
+const flash = require("connect-flash");
 const Campground = require("../models/campground");
 const Review = require("../models/reviews");
 
@@ -28,6 +28,8 @@ router.post(
     campground.reviews.push(review);
     await review.save();
     await campground.save();
+    req.flash("success", "Review added successfully");
+
     res.redirect(`/campgrounds/${campground._id}`);
   })
 );
@@ -38,6 +40,8 @@ router.delete(
     const { id, reviewId } = req.params;
     await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);
+    req.flash("success", "Review deleted");
+
     res.redirect(`/campgrounds/${id}`);
   })
 );
