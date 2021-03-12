@@ -3,6 +3,7 @@ const router = express.Router();
 const catchAsync = require("../utils/catchAsync");
 const { campgroundSchema } = require("../validation");
 const flash = require("connect-flash");
+const { chunkify } = require("../public/js/utils");
 
 const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground");
@@ -21,7 +22,8 @@ router.get(
   "/",
   catchAsync(async (req, res) => {
     const campgrounds = await Campground.find({});
-    res.render("campgrounds/index", { campgrounds });
+    out = chunkify(campgrounds, 4);
+    res.render("campgrounds/index", { campgrounds, out });
   })
 );
 
@@ -34,38 +36,44 @@ router.post(
   validateCampground,
   catchAsync(async (req, res, next) => {
     const campground = new Campground(req.body.campground);
-    await campground.save();
-    req.flash("success", "Successfully added a new campground");
-    res.redirect(`/campgrounds/${campground._id}`);
+    if (campground === null) {
+      req.flash("error", "Something went wrong, can't create campground!");
+      return res.redirect("/campgrounds");
+    } else {
+      await campground.save();
+      req.flash("success", "Successfully added a new campground");
+      res.redirect(`/campgrounds/${campground._id}`);
+    }
   })
 );
 
 router.get(
   "/:id",
   catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id).populate(
-      "reviews"
-    );
-    if (!campground) {
+    try {
+      const campground = await Campground.findById(req.params.id).populate(
+        "reviews"
+      );
+      res.render("campgrounds/show", { campground });
+    } catch (error) {
       req.flash("error", "Campground doesn't exist");
 
       return res.redirect("/campgrounds");
     }
-
-    res.render("campgrounds/show", { campground });
   })
 );
 
 router.get(
   "/:id/edit",
   catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id);
-    if (!campground) {
+    try {
+      const campground = await Campground.findById(req.params.id);
+      res.render("campgrounds/edit", { campground });
+    } catch (error) {
       req.flash("error", "Campground doesn't exist");
 
       return res.redirect("/campgrounds");
     }
-    res.render("campgrounds/edit", { campground });
   })
 );
 
