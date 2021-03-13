@@ -4,7 +4,7 @@ const flash = require("connect-flash");
 const Campground = require("../models/campground");
 const Review = require("../models/reviews");
 
-const { reviewValidation } = require("../validation");
+const { reviewValidation } = require("../models/validation");
 
 const ExpressError = require("../utils/ExpressError");
 const catchAsync = require("../utils/catchAsync");

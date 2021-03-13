@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const catchAsync = require("../utils/catchAsync");
-const { campgroundSchema } = require("../validation");
+const { campgroundSchema } = require("../models/validation");
 const flash = require("connect-flash");
 const { chunkify } = require("../public/js/utils");
 

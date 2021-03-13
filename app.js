@@ -1,13 +1,16 @@
 const express = require("express");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
-const mongoose = require("mongoose");
-const path = require("path");
+const flash = require("connect-flash");
 const session = require("express-session");
+const mongoose = require("mongoose");
 const ExpressError = require("./utils/ExpressError");
+const passport = require("passport");
+const passporLocal = require("passport-local");
+const path = require("path");
 const campgroundRouters = require("./routes/campgroundRoutes");
 const reviewRouters = require("./routes/reviewRoutes");
-const flash = require("connect-flash");
+const User = require("./models/user");
 const { RSA_NO_PADDING } = require("constants");
 
 function init_database() {
@@ -35,6 +38,7 @@ function init_express() {
   app.use(methodOverride("_method"));
   app.use(express.static(__dirname + "/public"));
   app.use(flash());
+
   const sessionConfig = {
     secret: "giorgos",
     resave: false,
@@ -46,6 +50,10 @@ function init_express() {
     },
   };
   app.use(session(sessionConfig));
+
+  passport.use(passport.initialize());
+  app.use(passport.session());
+  passport.use();
   return app;
 }
 
