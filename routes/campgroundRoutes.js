@@ -34,6 +34,7 @@ router.get("/new", middleware.is_Authenticated, (req, res) => {
 
 router.post(
   "/",
+  middleware.is_Authenticated,
   validateCampground,
   catchAsync(async (req, res, next) => {
     const campground = new Campground(req.body.campground);

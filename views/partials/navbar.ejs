@@ -1,5 +1,5 @@
 <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">YelpCamp</a>
+  <a class="navbar-brand ml-3" href="#">YelpCamp</a>
   <button
     class="navbar-toggler"
     type="button"
@@ -15,6 +15,14 @@
     <div class="navbar-nav">
       <a class="nav-item nav-link" href="/">Home</a>
       <a class="nav-item nav-link" href="/campgrounds">Campgrounds</a>
+    </div>
+    <div class="navbar-nav ml-auto mr-3">
+      <% if(!currentUser) {%>
+      <a class="nav-item nav-link" href="/login">Login</a>
+      <a class="nav-item nav-link" href="/register">Register</a>
+      <% }else{ %>
+      <a class="nav-item nav-link" href="/logout">Logout</a>
+      <% } %>
     </div>
   </div>
 </nav>

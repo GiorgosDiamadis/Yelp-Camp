@@ -15,8 +15,13 @@ router.post(
       const { email, username, password } = req.body;
       const user = new User({ email, username });
       const registeredUser = await User.register(user, password);
-      req.flash("success", "Registration completed!");
-      res.redirect("/campgrounds");
+      req.login(registeredUser, (err) => {
+        if (err) {
+          return next(err);
+        }
+        req.flash("success", "Registration completed!");
+        res.redirect("/campgrounds");
+      });
     } catch (e) {
       req.flash("error", e.message);
       res.redirect("/register");
@@ -36,13 +41,16 @@ router.post(
   }),
   (req, res, next) => {
     req.flash("success", "Welcome back");
-    res.redirect("/campgrounds");
+    const redirectUrl = req.session.returnTo || "/campgrounds";
+    delete req.session.returnTo;
+    res.redirect(redirectUrl);
   }
 );
 
-router.post(
-  "/logout",
-  catchAsync(async (req, res, next) => {})
-);
+router.get("/logout", (req, res, next) => {
+  req.logout();
+  req.flash("success", "Logged out!");
+  res.redirect("/campgrounds");
+});
 
 module.exports = router;
