@@ -7,6 +7,7 @@ const { chunkify } = require("../public/js/utils");
 
 const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground");
+const middleware = require("../middleware");
 
 const validateCampground = (req, res, next) => {
   const { error } = campgroundSchema.validate(req.body);
@@ -27,7 +28,7 @@ router.get(
   })
 );
 
-router.get("/new", (req, res) => {
+router.get("/new", middleware.is_Authenticated, (req, res) => {
   res.render("campgrounds/new");
 });
 
