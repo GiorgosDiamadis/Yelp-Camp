@@ -1,10 +1,6 @@
 <% layout('layouts/boilerplate')%>
 
-<div class="d-flex justify-content-center">
-  <button class="btn btn-primary">
-    <a href="/campgrounds/new">Add Campground</a>
-  </button>
-</div>
+<a href="/campgrounds/new" class="btn btn-info">Add Campground</a>
 
 <div class="container">
   <% for(let chunk of out) {%>
@@ -15,9 +11,13 @@
         <img src="<%= camp.image %> " class="card-img-top" />
         <div class="card-body">
           <h5 class="card-title"><%=camp.title%>, <%= camp.location %></h5>
-          <a href="/campgrounds/<%= camp._id %> " class="btn btn-primary"
-            >Check it out</a
-          >
+          <div class="row">
+            <div class="col text-center">
+              <a href="/campgrounds/<%= camp._id %> " class="btn btn-primary"
+                >Details</a
+              >
+            </div>
+          </div>
         </div>
       </div>
     </div>

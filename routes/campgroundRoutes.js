@@ -1,23 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const catchAsync = require("../utils/catchAsync");
-const { campgroundSchema } = require("../models/validation");
+const { validateCampground } = require("../middleware");
 const flash = require("connect-flash");
 const { chunkify } = require("../public/js/utils");
 
 const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground");
-const middleware = require("../middleware");
-
-const validateCampground = (req, res, next) => {
-  const { error } = campgroundSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(msg, 400);
-  } else {
-    next();
-  }
-};
+const { is_Authenticated } = require("../middleware");
 
 router.get(
   "/",
@@ -28,13 +18,13 @@ router.get(
   })
 );
 
-router.get("/new", middleware.is_Authenticated, (req, res) => {
+router.get("/new", is_Authenticated, (req, res) => {
   res.render("campgrounds/new");
 });
 
 router.post(
   "/",
-  middleware.is_Authenticated,
+  is_Authenticated,
   validateCampground,
   catchAsync(async (req, res, next) => {
     const campground = new Campground(req.body.campground);
@@ -42,6 +32,7 @@ router.post(
       req.flash("error", "Something went wrong, can't create campground!");
       return res.redirect("/campgrounds");
     } else {
+      campground.user = req.user;
       await campground.save();
       req.flash("success", "Successfully added a new campground");
       res.redirect(`/campgrounds/${campground._id}`);
@@ -51,11 +42,13 @@ router.post(
 
 router.get(
   "/:id",
+  is_Authenticated,
   catchAsync(async (req, res) => {
     try {
       const campground = await Campground.findById(req.params.id).populate(
         "reviews"
       );
+
       res.render("campgrounds/show", { campground });
     } catch (error) {
       req.flash("error", "Campground doesn't exist");

@@ -3,28 +3,20 @@ const router = express.Router({ mergeParams: true });
 const flash = require("connect-flash");
 const Campground = require("../models/campground");
 const Review = require("../models/reviews");
-
-const { reviewValidation } = require("../models/validation");
+const { is_Authenticated } = require("../middleware");
+const { validateReview } = require("../middleware");
 
 const ExpressError = require("../utils/ExpressError");
 const catchAsync = require("../utils/catchAsync");
 
-const validateReview = (req, res, next) => {
-  const { error } = reviewValidation.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(msg, 400);
-  } else {
-    next();
-  }
-};
-
 router.post(
   "/",
+  is_Authenticated,
   validateReview,
   catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     const review = new Review(req.body.rev);
+    review.user = req.user;
     campground.reviews.push(review);
     await review.save();
     await campground.save();
@@ -36,6 +28,7 @@ router.post(
 
 router.delete(
   "/:reviewId",
+  is_Authenticated,
   catchAsync(async (req, res) => {
     const { id, reviewId } = req.params;
     await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
