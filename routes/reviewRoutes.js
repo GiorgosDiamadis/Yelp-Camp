@@ -3,7 +3,7 @@ const router = express.Router({ mergeParams: true });
 const flash = require("connect-flash");
 const Campground = require("../models/campground");
 const Review = require("../models/reviews");
-const { is_Authenticated } = require("../middleware");
+const { is_Authenticated, has_review_permission } = require("../middleware");
 const { validateReview } = require("../middleware");
 
 const ExpressError = require("../utils/ExpressError");
@@ -29,6 +29,7 @@ router.post(
 router.delete(
   "/:reviewId",
   is_Authenticated,
+  has_review_permission,
   catchAsync(async (req, res) => {
     const { id, reviewId } = req.params;
     await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });

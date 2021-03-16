@@ -1,13 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const catchAsync = require("../utils/catchAsync");
-const { validateCampground } = require("../middleware");
+const {
+  validateCampground,
+  has_campground_permission,
+} = require("../middleware");
 const flash = require("connect-flash");
 const { chunkify } = require("../public/js/utils");
 
 const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground");
-const { is_Authenticated } = require("../middleware");
+const { is_Authenticated, has_permission } = require("../middleware");
 
 router.get(
   "/",
@@ -60,6 +63,8 @@ router.get(
 
 router.get(
   "/:id/edit",
+  is_Authenticated,
+  has_campground_permission,
   catchAsync(async (req, res) => {
     try {
       const campground = await Campground.findById(req.params.id);
@@ -74,6 +79,8 @@ router.get(
 
 router.put(
   "/:id",
+  is_Authenticated,
+  has_campground_permission,
   validateCampground,
   catchAsync(async (req, res) => {
     const { id } = req.params;
@@ -88,6 +95,8 @@ router.put(
 
 router.delete(
   "/:id",
+  is_Authenticated,
+  has_campground_permission,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
