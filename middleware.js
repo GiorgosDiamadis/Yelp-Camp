@@ -6,6 +6,7 @@ const Campground = require("./models/campground");
 const Review = require("./models/reviews");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
+const passport = require("passport");
 
 module.exports.is_Authenticated = (req, res, next) => {
   if (!req.isAuthenticated()) {
@@ -15,6 +16,11 @@ module.exports.is_Authenticated = (req, res, next) => {
   }
   next();
 };
+
+module.exports.passport_authenticate = passport.authenticate("local", {
+  failureFlash: true,
+  failureRedirect: "/login",
+});
 module.exports.validateCampground = (req, res, next) => {
   const { error } = campgroundValidation.validate(req.body);
   if (error) {

@@ -22,34 +22,29 @@ const {
   deleteCampground,
 } = require("../controllers/campgroundControllers");
 
-router.get("/", index);
+router
+  .route("/")
+  .get(index)
+  .post(is_Authenticated, validateCampground, createNewCampground);
 
 router.get("/new", is_Authenticated, renderNewCampgroundForm);
 
-router.post("/", is_Authenticated, validateCampground, createNewCampground);
-
-router.get("/:id", is_Authenticated, viewCampground);
+router
+  .route("/:id")
+  .get(is_Authenticated, viewCampground)
+  .put(
+    is_Authenticated,
+    has_campground_permission,
+    validateCampground,
+    editCampground
+  )
+  .delete(is_Authenticated, has_campground_permission, deleteCampground);
 
 router.get(
   "/:id/edit",
   is_Authenticated,
   has_campground_permission,
   renderEditCampgroundForm
-);
-
-router.put(
-  "/:id",
-  is_Authenticated,
-  has_campground_permission,
-  validateCampground,
-  editCampground
-);
-
-router.delete(
-  "/:id",
-  is_Authenticated,
-  has_campground_permission,
-  deleteCampground
 );
 
 module.exports = router;
