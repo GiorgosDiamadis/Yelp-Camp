@@ -1,5 +1,5 @@
 <% layout('layouts/boilerplate')%>
-
+<link rel="stylesheet" href="/stylesheets/stars.css" />
 <div class="row mb-3">
   <div class="col-6">
     <div class="card">
@@ -16,8 +16,8 @@
         <li class="list-group-item text-muted"><%=campground.location%></li>
         <li class="list-group-item">&#36;<%=campground.price%></li>
       </ul>
-      <% if(campground.user != undefined && campground.user.equals(
-      currentUser._id)){ %>
+      <% if(currentUser != undefined && campground.user != undefined &&
+      campground.user.equals( currentUser._id)){ %>
       <div class="card-body">
         <a
           class="card-link btn btn-info"
@@ -42,14 +42,36 @@
   </div>
 
   <div class="col-6">
+    <%if(currentUser != undefined){%>
+    <h3>Leave a review</h3>
     <form
       action="/campgrounds/<%= campground._id %>/review "
       method="POST"
       novalidate
       class="validated-form"
     >
+      <fieldset class="starability-basic">
+        <input
+          type="radio"
+          id="no-rate"
+          class="input-no-rate"
+          name="rev[rating]"
+          value="0"
+          checked
+          aria-label="No rating."
+        />
+        <input type="radio" id="first-rate1" name="rev[rating]" value="1" />
+        <label for="first-rate1" title="Terrible">1 star</label>
+        <input type="radio" id="first-rate2" name="rev[rating]" value="2" />
+        <label for="first-rate2" title="Not good">2 stars</label>
+        <input type="radio" id="first-rate3" name="rev[rating]" value="3" />
+        <label for="first-rate3" title="Average">3 stars</label>
+        <input type="radio" id="first-rate4" name="rev[rating]" value="4" />
+        <label for="first-rate4" title="Very good">4 stars</label>
+        <input type="radio" id="first-rate5" name="rev[rating]" value="5" />
+        <label for="first-rate5" title="Amazing">5 stars</label>
+      </fieldset>
       <div>
-        <label for="review" class="form-label">Review</label>
         <textarea
           class="form-control"
           type="text"
@@ -59,30 +81,16 @@
         ></textarea>
       </div>
 
-      <div>
-        <label for="rating" class="form-label"> Rating</label>
-        <input
-          class="form-control"
-          type="number"
-          id="rating"
-          name="rev[rating]"
-          class="form control"
-          required
-        />
-      </div>
-
       <button class="btn btn-success mt-3">Add review</button>
     </form>
-
     <hr />
-
-    <% for(const rev of campground.reviews) {%>
+    <%}%> <% for(const rev of campground.reviews) {%>
     <div class="card mb-3">
       <div class="card-body">
-        <p class="card-title">Rating: <%= rev.rating %></p>
+        <p class="card-text text-muted"><%=rev.user.username%></p>
+        <p class="starability-result" data-rating="<%= rev.rating %>"></p>
         <p class="card-text"><%= rev.review %></p>
-        <p class="card-text text-muted">By <%=rev.user.username%></p>
-        <% if(rev.user != undefined && rev.user.equals(currentUser._id)){ %>
+        <% if(currentUser != undefined && rev.user.equals(currentUser._id)){ %>
         <form
           action="/campgrounds/<%= campground._id %>/review/<%= rev._id %>?_method=DELETE"
           method="POST"

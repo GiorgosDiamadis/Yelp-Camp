@@ -1,7 +1,7 @@
 <% layout('layouts/boilerplate')%>
 
 <div class="row">
-  <div class="col-6 offset-3">
+  <div class="col-6 offset-3" id="dv">
 
     <div  class="card text-dark bg-light mb-3" >
       <div class="card-header">
@@ -73,3 +73,16 @@
     
   </div>
 </div>
+<script>
+  $(window).resize(function() {
+    if ($(window).width() < 1050) {
+        $('#dv').removeClass('col-6');
+        $('#dv').removeClass('offset-3');
+
+    } else {
+      $('#dv').addClass('col-6');
+        $('#dv').addClass('offset-3');
+    }
+}).resize();
+</script>
+

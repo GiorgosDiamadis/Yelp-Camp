@@ -13,6 +13,6 @@ module.exports.campgroundValidation = Joi.object({
 module.exports.reviewValidation = Joi.object({
   rev: Joi.object({
     review: Joi.string().required(),
-    rating: Joi.number().min(1).max(5).required().label("Rating"),
+    rating: Joi.number().min(0).max(5).required().label("Rating"),
   }).required(),
 });
