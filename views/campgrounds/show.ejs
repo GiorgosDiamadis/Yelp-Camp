@@ -16,8 +16,8 @@
         <li class="list-group-item text-muted"><%=campground.location%></li>
         <li class="list-group-item">&#36;<%=campground.price%></li>
       </ul>
-      <% if(campground.user != undefined && campground.user.toString() ===
-      currentUser._id.toString()){ %>
+      <% if(campground.user != undefined && campground.user.equals(
+      currentUser._id)){ %>
       <div class="card-body">
         <a
           class="card-link btn btn-info"
@@ -33,7 +33,11 @@
           <button class="btn btn-danger">Delete</button>
         </form>
       </div>
-      <%}%>
+      <%}else{%> <%if(campground.user != undefined){%>
+      <li class="list-group-item text-muted">
+        By <%= campground.user.username%>
+      </li>
+      <%}%> <%}%>
     </div>
   </div>
 
@@ -77,8 +81,8 @@
       <div class="card-body">
         <p class="card-title">Rating: <%= rev.rating %></p>
         <p class="card-text"><%= rev.review %></p>
-        <% if(rev.user != undefined && rev.user.toString() ===
-        currentUser._id.toString()){ %>
+        <p class="card-text text-muted">By <%=rev.user.username%></p>
+        <% if(rev.user != undefined && rev.user.equals(currentUser._id)){ %>
         <form
           action="/campgrounds/<%= campground._id %>/review/<%= rev._id %>?_method=DELETE"
           method="POST"
