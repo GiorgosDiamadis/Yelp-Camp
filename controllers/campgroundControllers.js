@@ -20,9 +20,17 @@ module.exports.createNewCampground = catchAsync(async (req, res, next) => {
     return res.redirect("/campgrounds");
   } else {
     campground.user = req.user;
-    await campground.save();
-    req.flash("success", "Successfully added a new campground");
-    res.redirect(`/campgrounds/${campground._id}`);
+    try {
+      await campground.save();
+      req.flash("success", "Successfully added a new campground");
+      res.redirect(`/campgrounds/${campground._id}`);
+    } catch (e) {
+      if (e.code === 11000) {
+        req.flash("error", "There is already a campground with that name!");
+      }
+
+      res.redirect(`/campgrounds/new`);
+    }
   }
 });
 

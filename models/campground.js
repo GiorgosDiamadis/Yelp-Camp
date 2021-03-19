@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const Review = require("./reviews");
 
 const CampgroundSchema = new Schema({
-  title: String,
+  title: { type: String, unique: true },
   image: String,
   price: Number,
   description: String,
