@@ -31,7 +31,7 @@ router.get("/new", is_Authenticated, renderNewCampgroundForm);
 
 router
   .route("/:id")
-  .get(viewCampground)
+  .get(is_Authenticated, viewCampground)
   .put(
     is_Authenticated,
     has_campground_permission,
